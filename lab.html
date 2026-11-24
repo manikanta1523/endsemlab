@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Hospital Management System</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #eaf4f4;
+            margin: 0;
+            text-align: center;
+        }
+        
+        header {
+            background-color: #008080;
+            color: white;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            width: 80%;
+            margin: 30px auto;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        input {
+            padding: 10px;
+            margin: 8px;
+            width: 220px;
+        }
+        
+        button {
+            background: #008080;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        
+        button:hover {
+            background: #005959;
+        }
+        
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        
+        th,
+        td {
+            border: 1px solid gray;
+            padding: 10px;
+        }
+        
+        th {
+            background: #008080;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Hospital Management System</h1>
+        <p>Patient Registration Portal</p>
+    </header>
+
+    <div class="container">
+
+        <h2>Add Patient Details</h2>
+
+        <input type="text" id="pid" placeholder="Patient ID"><br>
+        <input type="text" id="name" placeholder="Patient Name"><br>
+        <input type="number" id="age" placeholder="Age"><br>
+        <input type="text" id="gender" placeholder="Gender"><br>
+        <input type="text" id="disease" placeholder="Disease"><br>
+        <input type="text" id="doctor" placeholder="Doctor Name"><br>
+
+        <button onclick="addPatient()">Add Patient</button>
+
+        <h2>Search Patient</h2>
+
+        <input type="text" id="search" placeholder="Enter Patient ID">
+        <button onclick="searchPatient()">Search</button>
+        <button onclick="showPatients()">Show All</button>
+
+        <h2>Patient Records</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Disease</th>
+                    <th>Doctor</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="patientList">
+            </tbody>
+        </table>
+
+    </div>
+
+    <script>
+        let patients = [];
+
+        function addPatient() {
+
+            let id = document.getElementById("pid").value;
+            let name = document.getElementById("name").value;
+            let age = document.getElementById("age").value;
+            let gender = document.getElementById("gender").value;
+            let disease = document.getElementById("disease").value;
+            let doctor = document.getElementById("doctor").value;
+
+            if (!id || !name || !age || !gender || !disease || !doctor) {
+                alert("Please fill all details!");
+                return;
+            }
+
+            if (patients.some(p => p.id === id)) {
+                alert("Patient ID already exists!");
+                return;
+            }
+
+            let patient = {
+                id,
+                name,
+                age,
+                gender,
+                disease,
+                doctor
+            };
+
+            patients.push(patient);
+
+            alert("Patient Added Successfully!");
+
+            showPatients();
+
+            document.querySelectorAll("input").forEach(input => {
+                if (input.id !== "search") input.value = "";
+            });
+        }
+
+        function showPatients() {
+
+            let table = document.getElementById("patientList");
+            table.innerHTML = "";
+
+            patients.forEach((p, index) => {
+
+                table.innerHTML += `
+                <tr>
+                    <td>${p.id}</td>
+                    <td>${p.name}</td>
+                    <td>${p.age}</td>
+                    <td>${p.gender}</td>
+                    <td>${p.disease}</td>
+                    <td>${p.doctor}</td>
+                    <td>
+                        <button onclick="deletePatient(${index})">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            `;
+            });
+        }
+
+        function searchPatient() {
+
+            let id = document.getElementById("search").value;
+
+            let patient = patients.find(p => p.id === id);
+
+            if (patient) {
+                alert(
+                    "Patient Found!\n" +
+                    "Name: " + patient.name +
+                    "\nAge: " + patient.age +
+                    "\nDisease: " + patient.disease +
+                    "\nDoctor: " + patient.doctor
+                );
+            } else {
+                alert("Patient Not Found!");
+            }
+        }
+
+        function deletePatient(index) {
+
+            if (confirm("Are you sure you want to delete?")) {
+                patients.splice(index, 1);
+                showPatients();
+                alert("Patient Deleted Successfully!");
+            }
+        }
+    </script>
+
+</body>
+
+</html>
